@@ -10,7 +10,7 @@ import io.quarkiverse.langchain4j.RegisterAiService;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-@RegisterAiService(modelName = "groq", retrievalAugmentor = ReflectionRetriever.class)
+@RegisterAiService(modelName = "vanillaopenai", retrievalAugmentor = ReflectionRetriever.class)
 public interface BleepBot {
 
     @SystemMessage("""

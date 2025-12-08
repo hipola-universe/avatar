@@ -39,6 +39,7 @@ public class ReflectionRetriever implements Supplier<RetrievalAugmentor> {
         .embeddingModel(model)
         .embeddingStore(store)
         .filter(metadataKey("avatarName").isEqualTo(avatarName))
+        .minScore(0.8)
         .maxResults(10)
         .build();
         return DefaultRetrievalAugmentor.builder()

@@ -35,6 +35,9 @@ public class Avatar implements Consumer<Notification> {
     BleepBot bleepBot;
 
     @Inject
+    ImageBot imageBot;
+
+    @Inject
     ChatMemoryStore memoryStore;
 
     @Inject
@@ -74,7 +77,7 @@ public class Avatar implements Consumer<Notification> {
     public void handleNotif(Notification notification){
         if(notification.sender.equals("sebi")){
             ConfigProvider.getConfig().getOptionalValue("avatar.additionalContext", String.class).ifPresent(value -> additionalContext = value);
-            //additionalContext = notification.chat;
+            additionalContext = notification.chat;
             Log.info("Additional context updated to : " + additionalContext);
         }
         else if(notification.chat.indexOf("[STOP]") > -1 ){
@@ -86,10 +89,10 @@ public class Avatar implements Consumer<Notification> {
         else {
             String response = discussionBot.chat(1, notification.chat, name, notification.sender, additionalContext) ;
             Log.info("\n \u001B[32m" + name + "\u001B[0m : " + response);
-            discussionsEmitter.send(new DiscussionFragment(notification.sender, name, response));
+            discussionsEmitter.send(new DiscussionFragment(name, notification.sender,response));
             if(response.indexOf("[STOP]") > -1 ){
                 reflect(notification.sender);
-                bleep();
+             bleep();
             }
            
             pub.publish(notification.sender, new Notification(response, name));
@@ -100,12 +103,15 @@ public class Avatar implements Consumer<Notification> {
 
     private void reflect(String sender) {
        Log.info("Time to reflect"); 
+       Log.info("memories : " + memoryStore.getMessages(1));
        reflectionIngestor.ingestReflection(reflectionBot.reflect(1, name, sender));
     }
 
     private void bleep() {
         Log.info("Time to bleep");
-        bleepsEmitter.send(bleepBot.bleep(1, name));
+        Bleep bleep = bleepBot.bleep(1, name);
+       bleep.setImageURL(imageBot.generateImage(bleep.getMessage()).url().toString());
+        bleepsEmitter.send(bleep);
         ChatMemoryRemover.remove(discussionBot, 1); 
         ChatMemoryRemover.remove(reflectionBot, 1); 
         ChatMemoryRemover.remove(bleepBot, 1); 
@@ -119,6 +125,7 @@ public class Avatar implements Consumer<Notification> {
         pub = ds.pubsub(Notification.class);
         subscriber = pub.subscribe(name, this);
         Log.info("Subscribed to " + name);
+        pub.publish("immigration", new Notification("Joining Hipola", name));
     }
 
 }
