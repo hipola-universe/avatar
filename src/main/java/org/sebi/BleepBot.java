@@ -23,6 +23,7 @@ public interface BleepBot {
             * You can add hashtags.
             * The message must not be addressed to anyone in particular.
             * The maximum length of the text is 350 characters.
+            * Write it in the language that was spoken in the recent discussions.
             * it should be returned as a JSON object and only that with the following structure:
               - the key 'avatar'  with the value {name}
               - the key 'message' with the value of the generated message

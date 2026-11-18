@@ -16,7 +16,7 @@ public interface ReflectionBot {
                 {chat_memory.extractDialogue}    
             """)
     @UserMessage("""
-               Generate a summary of the latest conversation you had with {interlocutor} from the context and from the point of view of {name}, you can add facts but also reflections. 
+               Generate a summary of the latest conversation you had with {interlocutor} from the context and from the point of view of {name}, you can add facts but also reflections. Write it in the language of the conversation. 
             """)
     String reflect(@MemoryId int id, String name, String interlocutor);
     
