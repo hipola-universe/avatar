@@ -7,7 +7,7 @@ import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
 import io.quarkiverse.langchain4j.RegisterAiService;
 
-@RegisterAiService(modelName = "ollama",retrievalAugmentor = ReflectionRetriever.class)
+@RegisterAiService(modelName = "vanillaopenai",retrievalAugmentor = ReflectionRetriever.class)
 @Singleton
 public interface DiscussionBot {
 

@@ -6,6 +6,8 @@ public class Bleep {
 
     private String message;
 
+    private String imageURL;
+
     public Bleep() {
     }
 
@@ -28,6 +30,14 @@ public class Bleep {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
 }

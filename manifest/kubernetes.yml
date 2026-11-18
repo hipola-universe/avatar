@@ -1,0 +1,87 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    app.quarkus.io/quarkus-version: 3.10.0
+    app.quarkus.io/commit-id: c830e4d2ab90a29799ca3268c99d9f5efa4a592a
+    app.quarkus.io/vcs-uri: https://github.com/sebastienblanc/avatar.git
+    app.quarkus.io/build-timestamp: 2024-10-21 - 17:23:42 +0000
+  labels:
+    app.kubernetes.io/name: avatar
+    app.kubernetes.io/version: 1.0.0-SNAPSHOT
+    app.kubernetes.io/managed-by: quarkus
+  name: avatar
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app.kubernetes.io/name: avatar
+    app.kubernetes.io/version: 1.0.0-SNAPSHOT
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    app.quarkus.io/quarkus-version: 3.10.0
+    app.quarkus.io/commit-id: c830e4d2ab90a29799ca3268c99d9f5efa4a592a
+    app.quarkus.io/vcs-uri: https://github.com/sebastienblanc/avatar.git
+    app.quarkus.io/build-timestamp: 2024-10-21 - 17:23:42 +0000
+  labels:
+    app.kubernetes.io/name: avatar
+    app.kubernetes.io/version: 1.0.0-SNAPSHOT
+    app.kubernetes.io/managed-by: quarkus
+  name: avatar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: avatar
+      app.kubernetes.io/version: 1.0.0-SNAPSHOT
+  template:
+    metadata:
+      annotations:
+        app.quarkus.io/quarkus-version: 3.10.0
+        app.quarkus.io/commit-id: c830e4d2ab90a29799ca3268c99d9f5efa4a592a
+        app.quarkus.io/vcs-uri: https://github.com/sebastienblanc/avatar.git
+        app.quarkus.io/build-timestamp: 2024-10-21 - 17:23:42 +0000
+      labels:
+        app.kubernetes.io/managed-by: quarkus
+        app.kubernetes.io/name: avatar
+        app.kubernetes.io/version: 1.0.0-SNAPSHOT
+    spec:
+      containers:
+        - env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: QUARKUS_LANGCHAIN4J_OLLAMA_OLLAMA_BASE_URL
+              value: http://host.minikube.internal:11434
+            - name: KAFKA_SSL_KEYSTORE_TYPE
+              value: PKCS12
+          image: sebi2706/avatar:1.1
+          imagePullPolicy: Always
+          name: avatar
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /etc/certs
+              name: certs-volume
+              readOnly: false
+      volumes:
+        - name: certs-volume
+          secret:
+            items:
+              - key: keystore
+                path: client.keystore.p12
+              - key: trustore
+                path: client.truststore.jks
+            optional: false
+            secretName: certs-secrets
